@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百度一下</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./vue.js"></script>
+    <script src="./jquery.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="logo">
+            <img src="https://www.baidu.com/img/bd_logo1.png?where=super" alt="" title="点击一下，了解更多">
+
+        </div>
+
+        <div class="search-box">
+            <span class="search-area">
+                <input type="text"
+                maxlength="100"
+                v-model="inputVal"
+                @focus = "() => inputFocus = true" 
+                @blur = "() => inputFocus = false">
+                <span class="icon icon-paizhao"></span>
+            </span>
+            <span class="search-btn">百度一下</span>
+
+        </div>
+
+        <ul class="search-list"
+        v-show = "inputFocus && searchList.length">
+            <li v-for = "res in searchList">{{res}}</li>
+            
+        </ul>
+    </div>
+
+    <script>
+        const vm = new Vue({
+            el:"#app",
+            data:{
+                inputFocus:false,
+                inputVal:'',
+                searchList:[],
+            },
+            methods:{
+                searchRes(res){
+                    this.searchList = res.s;
+                }
+            },
+            watch:{
+                inputVal(){
+                    $.ajax({
+                        dataType:'jsonP',
+                        url: 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',
+                        data:{
+                            wd:this.inputVal,//字符串，搜索的文字
+                            cb:'vm.searchRes', //字符串，callback函数的名字
+                        }
+                    })
+                }
+            }
+            
+        })
+    </script>
+</body>
+</html>
